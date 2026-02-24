@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/CRUD BD integrado/CRUD BD integrado.iml" filepath="$PROJECT_DIR$/CRUD BD integrado/CRUD BD integrado.iml" />
       <module fileurl="file://$PROJECT_DIR$/CRUD simples.iml" filepath="$PROJECT_DIR$/CRUD simples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CRUD simples BD integrado/CRUD simples BD integrado.iml" filepath="$PROJECT_DIR$/CRUD simples BD integrado/CRUD simples BD integrado.iml" />
     </modules>
   </component>
 </project>
