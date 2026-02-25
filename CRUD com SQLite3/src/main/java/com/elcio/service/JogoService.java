@@ -1,15 +1,12 @@
 package com.elcio.service;
 import com.elcio.model.Jogo;
+import com.elcio.repository.JogoRepository;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Scanner;
-import static com.elcio.repository.JogoRepository.carregarJogos;
-import static com.elcio.repository.JogoRepository.salvar;
 
 public class JogoService {
-    public int actualId = 0;
-    public final ArrayList<Jogo> jogos = new ArrayList<>();
     public final DateTimeFormatter dates = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public final Scanner scanner = new Scanner(System.in);
 
@@ -17,10 +14,9 @@ public class JogoService {
     }
 
     public void function() {
-        actualId = carregarJogos(jogos, actualId, dates);
         int option;
         do {
-            System.out.println("O que você deseja?\n1-Adicionar jogo\n2-Atualizar jogo\n3-Remover jogo\n4-Exibir lista de jogos\n5-Buscar jogo por nome\n6-Sair\n");
+            System.out.println("O que você deseja?\n1-Adicionar jogo\n2-Atualizar jogo\n3-Remover jogo\n4-Exibir lista de jogos\n5-Buscar com filtro\n6-Sair\n");
             option = Integer.parseInt(scanner.nextLine());
             System.out.println();
             switch (option) {
@@ -34,13 +30,12 @@ public class JogoService {
                     remover();
                     break;
                 case 4:
-                    exibir();
+                    JogoRepository.read();
                     break;
                 case 5:
-                    buscarNome();
+                    buscar();
                     break;
                 case 6:
-                    salvar(jogos);
                     scanner.close();
                     System.exit(0);
                     break;
@@ -51,27 +46,33 @@ public class JogoService {
     private void adicionar() {
         System.out.println("Qual o nome do seu jogo?");
         String nome = scanner.nextLine();
+        if(nome.equals("")) {
+            throw new IllegalArgumentException("Nome Inválido");
+        }
         System.out.println("Quais as plataformas do seu jogo?");
         String plataforma = scanner.nextLine();
+        if(plataforma.equals("")) {
+            throw new IllegalArgumentException("Plataforma Inválida");
+        }
         System.out.println("Quais os gêneros do seu jogo?");
         String genero = scanner.nextLine();
+        if(genero.equals("")) {
+            throw new IllegalArgumentException("Gênero Inválido");
+        }
         System.out.println("Qual a data de lançamento do seu jogo (ano/mes/dia)?");
         String dataDeLancamento = scanner.nextLine();
+        if(dataDeLancamento.equals("")) {
+            throw new IllegalArgumentException("Data Inválida");
+        }
         LocalDate date = LocalDate.parse(dataDeLancamento, dates);
-        int id = actualId;
-        Jogo jogo = new Jogo(nome, date, plataforma, id, genero);
-        jogos.add(jogo);
-        System.out.println("\nJogo adicionado com sucesso\n");
-        actualId++;
-        salvar(jogos);
+        Jogo jogo = new Jogo(nome, date, plataforma, genero);
+        JogoRepository.create(jogo);
     }
 
     private void atualizar() {
         System.out.println("Qual jogo você deseja atualizar? (selecione o ID)\n");
-        exibir();
-        int idSelecionado = Integer.parseInt(scanner.nextLine());
-        for (Jogo j : jogos) {
-            if (j.getId() == idSelecionado) {
+        JogoRepository.read();
+        int idEscolhido = Integer.parseInt(scanner.nextLine());
                 int alteracao;
                 do {
                     System.out.println("\nO que deseja alterar?\n1-Nome\n2-Data de lançamento\n3-Plataforma\n4-Gênero\n5-Sair\n");
@@ -81,78 +82,51 @@ public class JogoService {
                         case 1:
                             System.out.print("Digite o nome: ");
                             String novoNome = scanner.nextLine();
-                            j.setNome(novoNome);
-                            System.out.println("\nNome atualizado com sucesso");
+                            JogoRepository.update(idEscolhido, novoNome, 1);
                             break;
                         case 2:
                             System.out.print("Digite a data (ano/mes/dia): ");
                             String novaData = scanner.nextLine();
-                            LocalDate date = LocalDate.parse(novaData, dates);
-                            j.setDataDeLancamento(date);
-                            System.out.println("\nData atualizada com sucesso");
+                            JogoRepository.update(idEscolhido, novaData, 2);
                             break;
                         case 3:
                             System.out.print("Digite a(as) plataforma(as): ");
                             String novaPlataforma = scanner.nextLine();
-                            j.setPlataforma(novaPlataforma);
-                            System.out.println("\nPlataforma atualizada com sucesso");
+                            JogoRepository.update(idEscolhido, novaPlataforma, 3);
                             break;
                         case 4:
                             System.out.print("Digite o(os) gênero(os): ");
                             String novoGenero = scanner.nextLine();
-                            j.setGenero(novoGenero);
-                            System.out.println("\nGênero atualizado com sucesso");
+                            JogoRepository.update(idEscolhido, novoGenero, 4);
                             break;
                         case 5:
                             System.out.println("Voltando...\n");
-                            salvar(jogos);
                             break;
-
                     }
                 } while (alteracao != 5);
                 return;
-            }
-        }
-        System.out.println("Id não encontrado\n");
-    }
-
-    private void exibir() {
-        if(jogos.isEmpty()) {
-            System.out.println("Lista vazia!\n");
-            return;
-        }
-        jogos.forEach(n -> System.out.println(n.toString() + "\n"));
     }
 
     private void remover() {
         System.out.println("Qual jogo você deseja deletar? (selecione o ID)\n");
-        exibir();
-        int idSelecionado = Integer.parseInt(scanner.nextLine());
-        for (Jogo j : jogos) {
-            if (j.getId() == idSelecionado) {
-                jogos.remove(j);
-                System.out.println("\nJogo removido com sucesso\n");
-                salvar(jogos);
-                return;
-            }
-        }
-        System.out.println("Id não encontrado\n");
+        JogoRepository.read();
+        int idEscolhido = Integer.parseInt(scanner.nextLine());
+        JogoRepository.delete(idEscolhido);
     }
 
-    private void buscarNome() {
-        System.out.println("Qual o nome do jogo que você procura?\n");
-        String nomeBuscar = scanner.nextLine();
-        System.out.println();
-        boolean encontrou = false;
-        for(Jogo j : jogos) {
-            if(j.getNome().toLowerCase().contains(nomeBuscar.toLowerCase())) {
-                System.out.println(j + "\n");
-                encontrou = true;
+    private void buscar() {
+        int option = 0;
+        do {
+            System.out.println("Deseja buscar por:\n1-ID\n2-Nome\n3-Plataforma\n4-Genero\n5-Data de Lançamento\n6-Cancelar");
+            option = Integer.parseInt(scanner.nextLine());
+            System.out.println();
+            switch(option) {
+
             }
-        }
-        if(!encontrou) {
-            System.out.println("Nenhum jogo foi encontrado!\n");
-        }
+
+        } while(option != 6);
     }
 }
+
+
 

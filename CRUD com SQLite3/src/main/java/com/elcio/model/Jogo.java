@@ -9,11 +9,10 @@ public class Jogo {
     public int id;
     public String genero;
 
-    public Jogo(String nome, LocalDate dataDeLancamento, String plataforma, int id, String genero) {
+    public Jogo(String nome, LocalDate dataDeLancamento, String plataforma, String genero) {
         this.nome = nome;
         this.dataDeLancamento = dataDeLancamento;
         this.genero = genero;
-        this.id = id;
         this.plataforma = plataforma;
     }
 
