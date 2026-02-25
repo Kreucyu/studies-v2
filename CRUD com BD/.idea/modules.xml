@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CRUD com BD.iml" filepath="$PROJECT_DIR$/CRUD com BD.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sqlite-jdbc.iml" filepath="$PROJECT_DIR$/sqlite-jdbc.iml" />
     </modules>
   </component>
 </project>
