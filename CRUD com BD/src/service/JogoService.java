@@ -1,16 +1,14 @@
-package repository;
+package service;
 
 import model.Jogo;
-import service.JogoRepository;
 
-import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static service.JogoRepository.carregarJogos;
-import static service.JogoRepository.salvar;
+import static repository.JogoRepository.carregarJogos;
+import static repository.JogoRepository.salvar;
 
 public class JogoService {
     public int actualId = 0;
@@ -117,47 +115,47 @@ public class JogoService {
                 } while (alteracao != 5);
                 return;
             }
-         }
+        }
         System.out.println("Id não encontrado\n");
     }
 
-        private void exibir() {
-            if(jogos.isEmpty()) {
-                System.out.println("Lista vazia!\n");
+    private void exibir() {
+        if(jogos.isEmpty()) {
+            System.out.println("Lista vazia!\n");
+            return;
+        }
+        jogos.forEach(n -> System.out.println(n.toString() + "\n"));
+    }
+
+    private void remover() {
+        System.out.println("Qual jogo você deseja deletar? (selecione o ID)\n");
+        exibir();
+        int idSelecionado = Integer.parseInt(scanner.nextLine());
+        for (Jogo j : jogos) {
+            if (j.getId() == idSelecionado) {
+                jogos.remove(j);
+                System.out.println("\nJogo removido com sucesso\n");
+                salvar(jogos);
                 return;
             }
-            jogos.forEach(n -> System.out.println(n.toString() + "\n"));
         }
+        System.out.println("Id não encontrado\n");
+    }
 
-        private void remover() {
-            System.out.println("Qual jogo você deseja deletar? (selecione o ID)\n");
-            exibir();
-            int idSelecionado = Integer.parseInt(scanner.nextLine());
-            for (Jogo j : jogos) {
-                if (j.getId() == idSelecionado) {
-                    jogos.remove(j);
-                    System.out.println("\nJogo removido com sucesso\n");
-                    salvar(jogos);
-                    return;
-                }
+    private void buscarNome() {
+        System.out.println("Qual o nome do jogo que você procura?\n");
+        String nomeBuscar = scanner.nextLine();
+        System.out.println();
+        boolean encontrou = false;
+        for(Jogo j : jogos) {
+            if(j.getNome().toLowerCase().contains(nomeBuscar.toLowerCase())) {
+                System.out.println(j + "\n");
+                encontrou = true;
             }
-            System.out.println("Id não encontrado\n");
         }
-
-        private void buscarNome() {
-            System.out.println("Qual o nome do jogo que você procura?\n");
-            String nomeBuscar = scanner.nextLine();
-            System.out.println();
-            boolean encontrou = false;
-            for(Jogo j : jogos) {
-                if(j.getNome().toLowerCase().contains(nomeBuscar.toLowerCase())) {
-                    System.out.println(j + "\n");
-                    encontrou = true;
-                }
-            }
-            if(!encontrou) {
-                System.out.println("Nenhum jogo foi encontrado!\n");
-            }
+        if(!encontrou) {
+            System.out.println("Nenhum jogo foi encontrado!\n");
         }
     }
+}
 
