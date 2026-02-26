@@ -104,7 +104,6 @@ public class JogoService {
                             break;
                     }
                 } while (alteracao != 5);
-                return;
     }
 
     private void remover() {
@@ -117,14 +116,40 @@ public class JogoService {
     private void buscar() {
         int option = 0;
         do {
-            System.out.println("Deseja buscar por:\n1-ID\n2-Nome\n3-Plataforma\n4-Genero\n5-Data de Lançamento\n6-Cancelar");
+            System.out.println("Deseja buscar por:\n1-Nome\n2-Plataforma\n3-Gênero\n4-Data de Lançamento\n5-Cancelar\n");
             option = Integer.parseInt(scanner.nextLine());
             System.out.println();
             switch(option) {
-
+                case 1:
+                    System.out.print("Digite o nome: ");
+                    String nome = scanner.nextLine();
+                    System.out.println();
+                    JogoRepository.searchWith(nome, 1);
+                    break;
+                case 2:
+                    System.out.print("Digite a plataforma: ");
+                    String plataforma = scanner.nextLine();
+                    System.out.println();
+                    JogoRepository.searchWith(plataforma, 2);
+                    break;
+                case 3:
+                    System.out.print("Digite o gênero: ");
+                    String genero = scanner.nextLine();
+                    System.out.println();
+                    JogoRepository.searchWith(genero, 3);
+                    break;
+                case 4:
+                    System.out.print("Digite a data: ");
+                    String data = scanner.nextLine();
+                    System.out.println();
+                    JogoRepository.searchWith(data, 4);
+                    break;
+                case 5:
+                    System.out.println("Voltando...\n");
+                    break;
             }
 
-        } while(option != 6);
+        } while(option != 5);
     }
 }
 

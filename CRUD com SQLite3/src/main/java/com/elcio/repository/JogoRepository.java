@@ -84,8 +84,9 @@ public class JogoRepository {
 
     public static void delete(int idDelete) {
         try (Connection connection = acess.getConnection();) {
-            String commandSql = "DELETE FROM jogos WHERE ID=" + idDelete;
+            String commandSql = "DELETE FROM jogos WHERE ID= ?";
             PreparedStatement creator = connection.prepareStatement(commandSql);
+            creator.setInt(1, idDelete);
             int resultado = creator.executeUpdate();
             if (resultado == 1) {System.out.println("\nJogo deletado com sucesso!\n");}
             creator.close();
@@ -94,5 +95,45 @@ public class JogoRepository {
         }
     }
 
-    
+    public static void searchWith(String busca, int tipo) {
+        String commandSql = null;
+        switch(tipo) {
+            case 1:
+                commandSql = "SELECT * FROM jogos WHERE nome LIKE ? COLLATE NOCASE";
+                break;
+            case 2:
+                commandSql = "SELECT * FROM jogos WHERE plataforma LIKE ? COLLATE NOCASE";
+                break;
+            case 3:
+                commandSql = "SELECT * FROM jogos WHERE genero LIKE ? COLLATE NOCASE";
+                break;
+            case 4:
+                commandSql = "SELECT * FROM jogos WHERE dataLancamento LIKE ? COLLATE NOCASE";
+                break;
+        }
+        try(Connection connection = acess.getConnection()) {
+            if(commandSql != null) {
+                PreparedStatement creator = connection.prepareStatement(commandSql);
+                creator.setString(1, "%" + busca + "%");
+                ResultSet resultSet = creator.executeQuery();
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("ID");
+                    String nome = resultSet.getString("nome");
+                    String plataforma = resultSet.getString("plataforma");
+                    String genero = resultSet.getString("genero");
+                    String dataLancamento = resultSet.getString("dataLancamento");
+                    LocalDate data = LocalDate.parse(dataLancamento, dates);
+                    Jogo jogo = new Jogo(nome, data, plataforma, genero);
+                    jogo.setId(id);
+                    System.out.println(jogo.toString() + "\n");
+                }
+            } else {
+                System.out.println("\nBusca inválida!");
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }
