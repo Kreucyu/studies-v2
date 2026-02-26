@@ -1,3 +1,13 @@
 spring:
   application:
     name: backlog
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/backlog
+    username: postgres
+    password: 123
+
+  jpa:
+    hibernate:
+    ddl-auto: update
+    show-sql: true
