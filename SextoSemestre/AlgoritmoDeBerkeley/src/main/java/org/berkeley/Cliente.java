@@ -4,7 +4,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Random;
 
-public class Cliente {
+public class Cliente extends Thread {
 
     public static void main(String[] args) {
         Random geradorDeTempo = new Random();
