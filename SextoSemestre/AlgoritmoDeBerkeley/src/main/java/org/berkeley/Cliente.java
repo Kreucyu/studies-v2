@@ -8,7 +8,7 @@ public class Cliente extends Thread {
 
     public static void main(String[] args) {
         Random geradorDeTempo = new Random();
-        int relogioCliente = geradorDeTempo.nextInt(-25, +20);
+        double relogioCliente = geradorDeTempo.nextDouble(-25, +20);
 
         try(Socket socket = new Socket("localhost", 4000)) {
             PrintStream envioDeDados = new PrintStream(socket.getOutputStream());
