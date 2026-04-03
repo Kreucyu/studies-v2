@@ -1,17 +1,40 @@
 package org.berkeley;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
-
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        int relogioServidor = 0;
+        List<Integer> horariosRelogios = new ArrayList<>();
+        try (ServerSocket serverSocket = new ServerSocket(4000)) {
+            Socket socket = serverSocket.accept();
+            System.out.println("O Cliente conectou");
+            InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String horarioRelogio;
+            while((horarioRelogio = bufferedReader.readLine()) != null) {
+                horariosRelogios.add(Integer.parseInt(horarioRelogio));
+                System.out.println("O HORARIO DO RELOGIO É" + horarioRelogio);
+                System.out.println("O CALCULO DOS HORARIOS É: "  + calcularMedia(relogioServidor, horariosRelogios));
+            }
+            System.out.println("O HORARIO FINAL É: " + calcularMedia(relogioServidor, horariosRelogios));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+
+
+    }
+
+    public static int calcularMedia(int relogioServidor, List<Integer> horariosRelogios) {
+        int valorTotal = relogioServidor;
+        for (Integer horario : horariosRelogios) {
+            valorTotal += horario;
+        }
+        return valorTotal;
     }
 }
