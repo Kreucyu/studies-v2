@@ -16,34 +16,35 @@ public class ServidorThread extends Thread {
     }
     @Override
     public void run() {
-
-        synchronized (this) {
-            servidor.adicionarCliente();
-        }
-
-        System.out.println("O cliente conectou!");
-
         try {
-
+            synchronized (servidor) {
+                servidor.adicionarCliente();
+            }
+            System.out.println("O cliente conectou!");
             InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream());
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String horarioRelogio = bufferedReader.readLine();
-            int horarioRelogioConverido = Integer.parseInt(horarioRelogio);
+            double horarioRelogioConverido = Double.parseDouble(horarioRelogio);
 
-            synchronized (this) {
+            synchronized (servidor) {
                 servidor.adicionarHorario(horarioRelogioConverido);
                 servidor.respostasCliente();
-                servidor.iniciarSincronizacao();
-            }
+                if(servidor.getClientesConectados() == servidor.getQuantidadeDeRespostas()) {
+                    servidor.iniciarSincronizacao();
+                }
+                while(!servidor.estaProntoParaSincronizar()) {
+                    servidor.wait();
+                }
 
-            double mediaAjuste = servidor.getMediaAjuste();
-            if (mediaAjuste != 0.0) {
-                double novoHorario = mediaAjuste - horarioRelogioConverido;
-                PrintStream printStream = new PrintStream(socket.getOutputStream());
-                printStream.println(novoHorario);
             }
+            double mediaAjuste = servidor.getMediaAjuste();
+            double novoHorario = mediaAjuste - horarioRelogioConverido;
+            PrintStream printStream = new PrintStream(socket.getOutputStream());
+            printStream.println(novoHorario);
 
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

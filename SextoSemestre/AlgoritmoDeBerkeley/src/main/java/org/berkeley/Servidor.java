@@ -1,7 +1,6 @@
 package org.berkeley;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,7 @@ public class Servidor {
     private int clientesConectados;
     private int quantidadeDeRespostas;
     private double mediaAjuste;
+    private boolean podeSincronizar;
 
     public Servidor() {
         this.horariosRelogios = new ArrayList<>();
@@ -20,6 +20,7 @@ public class Servidor {
         this.quantidadeDeRespostas = 0;
         this.horarioServidor = 0.0;
         this.mediaAjuste = 0.0;
+        this.podeSincronizar = false;
     }
 
     public void iniciarServidor(int porta) {
@@ -39,6 +40,8 @@ public class Servidor {
             double mediaAjuste = calcularMedia();
             this.horarioServidor += mediaAjuste;
             this.mediaAjuste = mediaAjuste;
+            this.podeSincronizar = true;
+            notifyAll();
         }
     }
 
@@ -58,7 +61,19 @@ public class Servidor {
 
     public void removerCliente() {this.clientesConectados--;}
 
+    public int getClientesConectados() {
+        return this.clientesConectados;
+    }
+
+    public int getQuantidadeDeRespostas() {
+        return this.quantidadeDeRespostas;
+    }
+
     public double getMediaAjuste() {
         return this.mediaAjuste;
+    }
+
+    public boolean estaProntoParaSincronizar() {
+        return this.podeSincronizar;
     }
 }

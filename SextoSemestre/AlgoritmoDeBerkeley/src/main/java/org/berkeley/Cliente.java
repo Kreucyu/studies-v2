@@ -4,17 +4,27 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Random;
 
-public class Cliente extends Thread {
+public class Cliente {
+    private Random geradorDeTempo;
+    private double relogioCliente;
 
-    public static void main(String[] args) {
-        Random geradorDeTempo = new Random();
-        double relogioCliente = geradorDeTempo.nextDouble(-25, +20);
+    public Cliente() {
+        this.geradorDeTempo = new Random();
+        this.relogioCliente = geradorDeTempo.nextDouble(-25, +20);
+    }
 
-        try(Socket socket = new Socket("localhost", 4000)) {
+    public void iniciarCliente(String host, int porta) {
+        try(Socket socket = new Socket(host, porta)) {
+            ClienteThread clienteThread = new ClienteThread(socket, this);
+            clienteThread.start();
             PrintStream envioDeDados = new PrintStream(socket.getOutputStream());
-            envioDeDados.println(relogioCliente);
+            envioDeDados.println(this.relogioCliente);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setRelogioCliente(double novoHorario) {
+        this.relogioCliente = novoHorario;
     }
 }
