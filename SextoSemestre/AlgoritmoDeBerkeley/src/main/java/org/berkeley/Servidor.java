@@ -39,7 +39,7 @@ public class Servidor {
     public void iniciarSincronizacao() {
         if(quantidadeDeRespostas == clientesConectados && quantidadeDeRespostas != 0) {
             double mediaAjuste = calcularMedia();
-            this.horarioServidor = mediaAjuste - horarioServidor;
+            this.horarioServidor = mediaAjuste - (-1 * horarioServidor);
             this.mediaAjuste = mediaAjuste;
             this.podeSincronizar = true;
             notifyAll();
@@ -77,5 +77,12 @@ public class Servidor {
 
     public boolean estaProntoParaSincronizar() {
         return this.podeSincronizar;
+    }
+
+    public void limparDados() {
+        this.clientesConectados = 0;
+        this.podeSincronizar = false;
+        this.mediaAjuste = 0;
+        this.quantidadeDeRespostas = 0;
     }
 }

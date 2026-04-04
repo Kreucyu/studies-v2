@@ -41,6 +41,7 @@ public class ServidorThread extends Thread {
             double novoHorario = mediaAjuste + (-1 * horarioRelogioConverido);
             PrintStream printStream = new PrintStream(socket.getOutputStream());
             printStream.println(novoHorario);
+            servidor.limparDados();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
