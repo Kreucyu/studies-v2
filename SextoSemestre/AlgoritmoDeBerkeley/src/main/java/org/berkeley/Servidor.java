@@ -25,6 +25,7 @@ public class Servidor {
 
     public void iniciarServidor(int porta) {
         try {
+            System.out.println("RELOGIO DO SERVIDOR ANTES DA SINCRONIZACAO: " + horarioServidor);
             serverSocket = new ServerSocket(porta);
             horariosRelogios.add(horarioServidor);
             while(true) {
@@ -38,10 +39,11 @@ public class Servidor {
     public void iniciarSincronizacao() {
         if(quantidadeDeRespostas == clientesConectados && quantidadeDeRespostas != 0) {
             double mediaAjuste = calcularMedia();
-            this.horarioServidor += mediaAjuste;
+            this.horarioServidor = mediaAjuste - horarioServidor;
             this.mediaAjuste = mediaAjuste;
             this.podeSincronizar = true;
             notifyAll();
+            System.out.println("RELOGIO DO SERVIDOR DEPOIS DA SINCRONIZACAO: " + horarioServidor);
         }
     }
 
